@@ -38,7 +38,7 @@ class Day:
         if puzzle is not None:
             return self.puzzle(int(puzzle)).run()
 
-        return [x.run() for x in self.puzzles]
+        return [self.puzzle(x).run() for x in range(1, 3)]
 
     def make_dirs(self):
         if os.path.exists(self.path):
