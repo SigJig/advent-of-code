@@ -1,8 +1,6 @@
 
 import os
 import re
-import json
-import requests
 from functools import reduce
 from importlib import import_module
 
@@ -15,42 +13,68 @@ class DayExists(Exception):
 class Day:
     def __init__(self, day):
         self.day = day
-        self.puzzles = set()
 
-        self.dir_basename = f'day_{self.day}'
-        self.path = os.path.join(self.__class__.days_dir(), self.dir_basename)
-        self.input_dir = os.path.join(self.path, 'input')
+        self.basename = f'day_{self.day}'
+        self.path = os.path.join(self.__class__.days_dir(), self.basename + '.py')
+        self.input_path = os.path.join(self.__class__.input_dir(), self.basename + '.txt')
 
     def __int__(self):
         return self.day
 
-    def puzzle(self, puzzle):
-        for i in self.puzzles:
-            if getattr(i, 'puzzle') == puzzle:
-                return i
+    def _import(self):
+        try:
+            return import_module('.' + self.basename, 'days')
+        except ImportError as e:
+            raise ImportError(f'Unable to import day {int(self.day)}, puzzle {int(self)}') from e
 
-        pzl = Puzzle(puzzle, self)
-        self.puzzles.add(pzl)
+    def run_puzzle(self, puzzle, *args, **kwargs):
+        attr = self.puzzle_basename(puzzle)
 
-        return pzl
+        try:
+            module = self._import()
 
-    def run(self, puzzle=None):
+            method = getattr(module, attr)
+        except AttributeError as e:
+            raise AttributeError(f'Imported module does not have a {attr} method') from e
+
+        return method(self, *args, **kwargs)
+
+    def run(self, puzzle=None, *args, **kwargs):
         if puzzle is not None:
-            return self.puzzle(int(puzzle)).run()
+            return self.run_puzzle(puzzle, *args, **kwargs)
 
-        return [self.puzzle(x).run() for x in range(1, 3)]
+        module = self._import()
 
-    def make_dirs(self):
+        return [getattr(module, method)(self, *args, **kwargs) for method in filter(lambda x: re.match(r'^puzzle_\d+$', x), dir(module))]
+
+    def make(self):
         if os.path.exists(self.path):
             raise DayExists(self.day)
 
-        os.mkdir(self.path)
-        os.mkdir(self.input_dir)
+        if not os.path.exists(self.input_dir()):
+            os.mkdir(self.input_dir())
 
-        with open(os.path.join(self.path, '__init__.py'), 'w+') as fp: pass
+        with open(self.path, 'w+') as fp:
+            template = '''
+            def {0}(day, *args, **kwargs):
+                pass
 
-    def make(self):
-        for i in range(1, 3): self.puzzle(i).make()
+            def {1}(day, *args, **kwargs):
+                pass
+            '''.split('\n')
+
+            template = '\n'.join([x.replace(' ' * 4 * 3, '') for x in template])
+
+            fp.write(template.format(*[self.puzzle_basename(x) for x in [1, 2]]))
+
+        with open(self.input_path, 'w+') as inp: pass
+
+    def puzzle_basename(self, puzzle):
+        return f'puzzle_{puzzle}'
+
+    @property
+    def input(self):
+        return open(self.input_path)
 
     @classmethod
     def all_days(cls):
@@ -66,59 +90,8 @@ class Day:
 
     @classmethod
     def days_dir(cls):
-        return os.path.join(os.path.dirname(__file__))
+        return os.path.join(os.path.dirname(__file__), 'days')
 
-class Puzzle:
-    def __init__(self, puzzle, day):
-        self.puzzle = puzzle
-        self.day = day
-
-    def __int__(self):
-        return self.puzzle
-
-    def run(self, *args, **kwargs):
-        try:
-            module = import_module(f'.{self.puzzle_basename}', self.day.dir_basename)
-
-            main = getattr(module, 'main')
-        except ImportError as e:
-            raise ImportError(f'Unable to import day {int(self.day)}, puzzle {int(self)}') from e
-        except AttributeError as e:
-            raise AttributeError(f'Imported module does not have a `main` method') from e
-
-        return main(self.day, self, *args, **kwargs)
-
-    def make(self):
-        try:
-            self.day.make_dirs()
-        except DayExists:
-            pass
-
-        with open(os.path.join(self.day.path, self.python_file), 'w+') as fp:
-            template = '''
-            def main(day, puzzle, *args, **kwargs):
-                pass
-            '''.split('\n')
-
-            template = '\n'.join([x.replace(' ' * 4 * 3, '') for x in template])
-
-            fp.write(template.format(day=int(self.day), puzzle=int(self)))
-
-        with open(os.path.join(self.day.input_dir, self.input_file), 'w+') as fp: pass
-
-    @property
-    def input(self):
-        with open(os.path.join(self.day.input_dir, self.input_file)) as fp:
-            return json.load(fp)
-
-    @property
-    def puzzle_basename(self):
-        return f'puzzle_{self.puzzle}'
-
-    @property
-    def input_file(self):
-        return self.puzzle_basename + '.json'
-
-    @property
-    def python_file(self):
-        return self.puzzle_basename + '.py'
+    @classmethod
+    def input_dir(cls):
+        return os.path.join(cls.days_dir(), 'input')

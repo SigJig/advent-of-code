@@ -49,18 +49,16 @@ class CLI:
             return f(*args[1:], **options)
 
     def make(self, *args, **options):
-        day = Day(int(args[0]))
+        if len(args) < 1 or not args[0].isdigit():
+            pass
 
-        if puzzle := options.get('puzzle', None):
-            return day.puzzle(int(puzzle)).make()
-
-        return day.make()
+        return Day(int(args[0])).make()
 
     def run(self, *args, **options):
         day = Day(int(args[0]))
 
         puzzle = options.get('puzzle', None)
-        data = day.run(options.get('puzzle', None))
+        data = day.run(puzzle=puzzle)
 
         if not puzzle:
             colors = ['OKGREEN', 'OKBLUE']
