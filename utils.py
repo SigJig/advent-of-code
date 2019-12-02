@@ -78,15 +78,9 @@ class Day:
 
     @classmethod
     def all_days(cls):
-        return [
-            os.path.join(root, file) for root, file in (
-                files for root, files, folders in os.walk(cls.days_dir)
-            )
-        ]
-
-    @classmethod
-    def num_days(cls):
-        return reduce(lambda acc, x: acc + x, cls.all_days(), 0)
+        for root, _, files in os.walk(cls.days_dir()):
+            for file in files:
+                if re.match(r'^day_\d+\.py$', file): yield os.path.join(root, file)
 
     @classmethod
     def days_dir(cls):
@@ -95,3 +89,6 @@ class Day:
     @classmethod
     def input_dir(cls):
         return os.path.join(cls.days_dir(), 'input')
+
+if __name__ == '__main__':
+	print(len(list(Day.all_days())), list(Day.all_days()))
