@@ -1,5 +1,5 @@
 
-from .lib import intcode
+from .lib.intcode import intcode
 
 def get_input(day):
     return list(map(int, day.input.read().split(',')))
