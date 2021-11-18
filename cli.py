@@ -56,9 +56,9 @@ class CLI:
 
     def run(self, *args, **options):
         day = Day(int(args[0]))
+        data = day.run(*args[1:], **options)
 
         puzzle = options.get('puzzle', None)
-        data = day.run(puzzle=puzzle)
 
         if not puzzle:
             colors = ['OKGREEN', 'OKBLUE']

@@ -18,7 +18,7 @@ def puzzle_2(day, *args, **kwargs):
 
     intcode(inp, iter([5]), outs)
 
-    return outs
+    return outs[0]
 
 if __name__ == '__main__':
     outs = []

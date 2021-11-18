@@ -39,9 +39,9 @@ class Day:
 
         return method(self, *args, **kwargs)
 
-    def run(self, puzzle=None, *args, **kwargs):
-        if puzzle is not None:
-            return self.run_puzzle(puzzle, *args, **kwargs)
+    def run(self, *args, **kwargs):
+        if 'puzzle' in kwargs:
+            return self.run_puzzle(*args, **kwargs)
 
         module = self._import()
 
