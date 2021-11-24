@@ -1,6 +1,7 @@
 
 import os
 import re
+import time
 from functools import reduce
 from importlib import import_module
 
@@ -11,41 +12,38 @@ class DayExists(Exception):
         super().__init__(message, *args, **kwargs)
 
 class Day:
-    def __init__(self, day):
+    def __init__(self, day, year):
         self.day = day
+        self.year = str(year)
 
         self.basename = f'day_{self.day}'
-        self.path = os.path.join(self.__class__.days_dir(), self.basename + '.py')
-        self.input_path = os.path.join(self.__class__.input_dir(), self.basename + '.txt')
+        self.path = os.path.join(self.__class__.days_dir(year), self.basename + '.py')
+        self.input_path = os.path.join(self.__class__.input_dir(year), self.basename + '.txt')
 
     def __int__(self):
         return self.day
 
     def _import(self):
         try:
-            return import_module('.' + self.basename, 'days')
+            return import_module('.' + self.basename, self.year)
         except ImportError as e:
             raise ImportError(f'Unable to import day {int(self.day)}, puzzle {int(self)}') from e
 
-    def run_puzzle(self, puzzle, *args, **kwargs):
-        attr = self.puzzle_basename(puzzle)
+    def run_method(self, method, *args, **kwargs):
+        start = time.perf_counter()
+        result = method(self, *args, **kwargs)
 
-        try:
-            module = self._import()
-
-            method = getattr(module, attr)
-        except AttributeError as e:
-            raise AttributeError(f'Imported module does not have a {attr} method') from e
-
-        return method(self, *args, **kwargs)
+        return result, round(time.perf_counter() - start, 8)
 
     def run(self, *args, **kwargs):
-        if 'puzzle' in kwargs:
-            return self.run_puzzle(*args, **kwargs)
-
         module = self._import()
 
-        return [getattr(module, method)(self, *args, **kwargs) for method in filter(lambda x: re.match(r'^puzzle_\d+$', x), dir(module))]
+        if 'puzzle' in kwargs:
+            methods = [self.puzzle_basename(x) for x in kwargs.pop('puzzle').split()]
+        else:
+            methods = filter(lambda x: re.match(r'^puzzle_\d+$', x), dir(module))
+
+        return [self.run_method(getattr(module, method), *args, **kwargs) for method in methods]
 
     def make(self):
         if os.path.exists(self.path):
@@ -77,18 +75,18 @@ class Day:
         return open(self.input_path)
 
     @classmethod
-    def all_days(cls):
-        for root, _, files in os.walk(cls.days_dir()):
+    def all_days(cls, year):
+        for root, _, files in os.walk(cls.days_dir(year)):
             for file in files:
                 if re.match(r'^day_\d+\.py$', file): yield os.path.join(root, file)
 
     @classmethod
-    def days_dir(cls):
-        return os.path.join(os.path.dirname(__file__), 'days')
+    def days_dir(cls, year):
+        return os.path.join(os.path.dirname(__file__), year)
 
     @classmethod
-    def input_dir(cls):
-        return os.path.join(cls.days_dir(), 'input')
+    def input_dir(cls, year):
+        return os.path.join(cls.days_dir(year), 'input')
 
 if __name__ == '__main__':
 	print(len(list(Day.all_days())), list(Day.all_days()))

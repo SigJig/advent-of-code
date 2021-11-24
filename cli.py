@@ -1,13 +1,17 @@
 
 import os
+import re
+from pathlib import Path
 from utils import Day
 
 class Color:
     data = {
         'HEADER': '\033[95m',
-        'OKBLUE': '\033[94m',
-        'OKGREEN': '\033[92m',
-        'WARNING': '\033[93m',
+        'OKGREEN': '\033[0;32;40m',
+        'OKYELLOW': '\033[0;33;40m',
+        'OKPURP': '\033[0;35;40m',
+        'OKCYAN': '\033[0;36;40m',
+        'WARNING': '\033[94m',
         'FAIL': '\033[91m',
         'ENDC': '\033[0m',
         'BOLD': '\033[1m',
@@ -31,7 +35,10 @@ class CLI:
 
         for arg in iterator:
             if arg.startswith('-'):
-                options[arg.lstrip('-')] = next(iterator)
+                try:
+                    options[arg.lstrip('-')] = next(iterator)
+                except StopIteration:
+                    raise Exception(Color.format(f'Missing value for {arg}', 'FAIL'))
             else:
                 args.append(arg)
 
@@ -55,18 +62,33 @@ class CLI:
         return Day(int(args[0])).make()
 
     def run(self, *args, **options):
-        day = Day(int(args[0]))
+        if (year := options.pop('year', None)) is None:
+            years = sorted((x for x in Path(__file__).parent.iterdir() if re.match(r'\d{4}', str(x)) and x.is_dir()), reverse=True)
+
+            try:
+                year = years[0]
+            except IndexError:
+                print(Color.format(f'No years available', 'FAIL'))
+                return
+
+        day = Day(int(args[0]), year)
         data = day.run(*args[1:], **options)
 
         puzzle = options.get('puzzle', None)
 
         if not puzzle:
-            colors = ['OKGREEN', 'OKBLUE']
+            colors = ['OKGREEN', 'OKYELLOW', 'OKPURP', 'OKCYAN']
 
             for index, i in enumerate(data):
-                print(Color.format(f'Puzzle {index + 1}: {i}', colors[index]))
+                result, time = i
+
+                print(Color.format(
+                    f'Puzzle {index + 1}: {result} ({time}s)',
+                    colors[index % (len(colors))]))
         else:
-            print(Color.format('Puzzle returned ' + str(data), 'OKBLUE'))
+            result, time = data[0]
+
+            print(Color.format(f'Puzzle returned {result} ({time}s)', 'OKCYAN'))
 
 if __name__ == '__main__':
     import sys
