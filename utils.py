@@ -65,7 +65,7 @@ class Day:
 
             template = '\n'.join([x.replace(' ' * 4 * 3, '') for x in template])
 
-            fp.write(template.format(*[self.puzzle_basename(x) for x in range(2)]))
+            fp.write(template.format(*[self.puzzle_basename(x) for x in range(1,3)]))
 
         with open(self.input_path, 'w+') as inp: pass
 
