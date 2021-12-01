@@ -55,21 +55,25 @@ class CLI:
         else:
             return f(*args[1:], **options)
 
-    def make(self, *args, **options):
-        if len(args) < 1 or not args[0].isdigit():
-            pass
-
-        return Day(int(args[0])).make()
-
-    def run(self, *args, **options):
+    def _get_year(self, options):
         if (year := options.pop('year', None)) is None:
             years = sorted((x for x in Path(__file__).parent.iterdir() if re.match(r'\d{4}', str(x)) and x.is_dir()), reverse=True)
 
             try:
-                year = years[0]
+                return years[0]
             except IndexError:
                 print(Color.format(f'No years available', 'FAIL'))
-                return
+                return None
+
+    def make(self, *args, **options):
+        if len(args) < 1 or not args[0].isdigit():
+            pass
+
+        return Day(int(args[0]), self._get_year(options)).make()
+
+    def run(self, *args, **options):
+        if (year := self._get_year(options)) is None:
+            return None
 
         day = Day(int(args[0]), year)
         data = day.run(*args[1:], **options)

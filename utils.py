@@ -49,8 +49,8 @@ class Day:
         if os.path.exists(self.path):
             raise DayExists(self.day)
 
-        if not os.path.exists(self.input_dir()):
-            os.mkdir(self.input_dir())
+        if not os.path.exists(self.input_dir(self.year)):
+            os.mkdir(self.input_dir(self.year))
 
         with open(self.path, 'w+') as fp:
             template = '''
