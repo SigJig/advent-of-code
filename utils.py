@@ -59,11 +59,21 @@ class Day:
 
             def {1}(day, *args, **kwargs):
                 pass
+
+            def {2}(day, *args, **kwargs):
+                """
+                Optimizations for puzzle 1 after having looked at other peoples solutions
+                """
+
+            def {3}(day, *args, **kwargs):
+                """
+                Optimizations for puzzle 2 after having looked at other peoples solutions
+                """
             '''.split('\n')
 
             template = '\n'.join([x.replace(' ' * 4 * 3, '') for x in template])
 
-            fp.write(template.format(*[self.puzzle_basename(x) for x in range(1,3)]))
+            fp.write(template.format(*[self.puzzle_basename(x) for x in range(1,4+1)]))
 
         with open(self.input_path, 'w+') as inp: pass
 

@@ -3,6 +3,7 @@ import os
 import re
 from pathlib import Path
 from utils import Day
+from time import perf_counter
 
 class Color:
     data = {
@@ -65,11 +66,28 @@ class CLI:
                 print(Color.format(f'No years available', 'FAIL'))
                 return None
 
+    def _get_day(self, *args, **options):
+        if (year := self._get_year(options)) is None:
+            raise Exception(Color.format('No day specified', 'FAIL'))
+        
+        return Day(int(args[0]), year)
+
     def make(self, *args, **options):
         if len(args) < 1 or not args[0].isdigit():
             pass
 
-        return Day(int(args[0]), self._get_year(options)).make()
+        return self._get_day(*args, **options).make()
+
+    def bench(self, *args, **options):
+        day = self._get_day(*args, **options)
+        cycles = int(options.pop('cycles', 10000))
+
+        start = perf_counter()
+        for _ in range(cycles):
+            day.run(*args[1:], **options)
+
+        print(Color.format(f'Benched at {cycles} iterations: {round(perf_counter()-start, 5)}s', 'OKGREEN'))
+
 
     def run(self, *args, **options):
         if (year := self._get_year(options)) is None:
