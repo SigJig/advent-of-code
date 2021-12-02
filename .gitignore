@@ -3,4 +3,4 @@ input/
 __pycache__/
 .vscode/
 .venv/
-2019/day_3.py
+*.githide.*

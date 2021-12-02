@@ -65,6 +65,8 @@ class CLI:
             except IndexError:
                 print(Color.format(f'No years available', 'FAIL'))
                 return None
+        
+        return year
 
     def _get_day(self, *args, **options):
         if (year := self._get_year(options)) is None:
