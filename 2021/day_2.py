@@ -14,17 +14,14 @@ def puzzle_1(day, *args, **kwargs):
 def puzzle_2(day, *args, **kwargs):
     inp = get_input(day)
 
-    aim, depth = 0, 0
-    hoz = 0
+    aim, depth, hoz = 0, 0, 0
 
     for k, v in inp:
         if k == 'forward':
             hoz += v
             depth += aim * v
-        elif k == 'up':
-            aim -= v
         else:
-            aim += v
+            aim += v if k == 'down' else -v
 
     return hoz * depth
 
