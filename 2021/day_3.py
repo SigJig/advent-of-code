@@ -10,12 +10,12 @@ def puzzle_1(day, *args, **kwargs):
     overflow = [0] * 11
 
     for i in inp:
-        for idx in range(len(overflow)):
+        for idx in range(len(overflow) - 1, -1, -1):
             overflow[idx] += 1 if (i & 1) else -1
             i >>= 1
 
-    bits = reduce(lambda x, y: (x << 1) | (0 if y <= 0 else 1), reversed(overflow), 0)
-
+    bits = reduce(lambda x, y: (x << 1) | (0 if y <= 0 else 1), overflow, 0)
+ 
     return bits * (bits ^ 0xfff)
 
 def puzzle_2(day, *args, **kwargs):
