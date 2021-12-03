@@ -3,11 +3,13 @@ from functools import reduce
 from operator import __lt__, __ge__
 
 def get_input(day, *args, **kwargs):
-    return [int(x, 2) for x in day.input]
+    data = [int(x, 2) for x in day.input]
+
+    return data, max(x.bit_length() for x in data)
 
 def puzzle_1(day, *args, **kwargs):
-    inp = get_input(day)
-    overflow = [0] * 11
+    inp, bc = get_input(day)
+    overflow = [0] * bc
 
     for i in inp:
         for idx in range(len(overflow) - 1, -1, -1):
@@ -19,9 +21,9 @@ def puzzle_1(day, *args, **kwargs):
     return bits * (bits ^ 0xfff)
 
 def puzzle_2(day, *args, **kwargs):
-    def find(inp, more=True):
+    def find(inp, bc, more=True):
         comp = __ge__ if more else __lt__
-        shifts = 11
+        shifts = bc - 1
 
         while len(inp) > 1 and shifts >= 0:
             zeros, ones = [], []
@@ -38,9 +40,9 @@ def puzzle_2(day, *args, **kwargs):
 
         return inp[0]
 
-    inp = get_input(day)
+    inp, bc = get_input(day)
 
-    return find(inp, True) * find(inp, False)
+    return find(inp, bc, True) * find(inp, bc, False) # oxygen * co2
 
 def puzzle_3(day, *args, **kwargs):
     """
@@ -50,8 +52,7 @@ def puzzle_3(day, *args, **kwargs):
 
     Faster, as the counting is done with the sum function
     """
-    data = get_input(day)
-    bits = max(x.bit_length() for x in data)
+    data, bits = get_input(day)
     gamma = 0
 
     for i in range(bits):
@@ -103,8 +104,7 @@ def puzzle_5(day, *args, **kwargs):
     
     Slower :DDDDD
     """
-    data = get_input(day)
-    bits = max(x.bit_length() for x in data)
+    data, bits = get_input(day)
 
     o2, co2 = [*data], [*data]
 
