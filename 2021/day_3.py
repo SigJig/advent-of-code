@@ -45,9 +45,75 @@ def puzzle_2(day, *args, **kwargs):
 def puzzle_3(day, *args, **kwargs):
     """
     Optimizations for puzzle 1 after having looked at other peoples solutions
-    """
+    
+    Pulled from reddit: https://www.reddit.com/r/adventofcode/comments/r7r0ff/comment/hn1biw9/?utm_source=share&utm_medium=web2x&context=3
 
+    Faster, as the counting is done with the sum function
+    """
+    data = get_input(day)
+    bits = max(x.bit_length() for x in data)
+    gamma = 0
+
+    for i in range(bits):
+        gamma_bit = sum((x >> i) & 1 for x in data) > len(data) // 2
+        gamma |= gamma_bit << i
+
+    return gamma * (2 ** bits - 1 ^ gamma)
+
+from collections import Counter
 def puzzle_4(day, *args, **kwargs):
     """
     Optimizations for puzzle 2 after having looked at other peoples solutions
+    
+    Pulled from reddit: https://www.reddit.com/r/adventofcode/comments/r7r0ff/comment/hn17b24/?utm_source=share&utm_medium=web2x&context=3
+
+    The fact that this is faster is extremely infuriating (but makes sense)
     """
+    data = [x for x in day.input.read().strip().split('\n')]
+
+    ll = data
+
+    theta = ''
+    epsilon = ''
+    for i in range(len(ll[0])):
+        common = Counter([x[i] for x in ll])
+
+        if common['0'] > common['1']:
+            ll = [x for x in ll if x[i] == '0']
+        else:
+            ll = [x for x in ll if x[i] == '1']
+        theta = ll[0]
+
+    ll = data
+    for i in range(len(ll[0])):
+        common = Counter([x[i] for x in ll])
+
+        if common['0'] > common['1']:
+            ll = [x for x in ll if x[i] == '1']
+        else:
+            ll = [x for x in ll if x[i] == '0']
+        if ll:
+            epsilon = ll[0]
+
+    return (int(theta,2)*int(epsilon,2))
+
+def puzzle_5(day, *args, **kwargs):
+    """
+    Pulled from: https://www.reddit.com/r/adventofcode/comments/r7r0ff/comment/hn1biw9/?utm_source=share&utm_medium=web2x&context=3
+    
+    Slower :DDDDD
+    """
+    data = get_input(day)
+    bits = max(x.bit_length() for x in data)
+
+    o2, co2 = [*data], [*data]
+
+    for i in range(bits - 1, -1, -1):
+        o2_bit = sum((x >> i) & 1 for x in o2) >= len(o2) / 2
+        o2 = [x for x in o2 if (x >> i) & 1 == o2_bit] or o2
+
+    for i in range(bits - 1, -1, -1):
+        co2_bit = sum((x >> i) & 1 for x in co2) < len(co2) / 2
+        co2 = [x for x in co2 if (x >> i) & 1 == co2_bit] or co2
+
+    return o2[0] * co2[0]
