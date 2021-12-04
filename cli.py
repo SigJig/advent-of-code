@@ -74,6 +74,9 @@ class CLI:
         
         return Day(int(args[0]), year)
 
+    def _format_time(self, tot, mx, mn, avg):
+        return f'Time elapsed: {tot}s, max: {mx}s, min: {mn}s, avg: {avg}s'
+
     def make(self, *args, **options):
         if len(args) < 1 or not args[0].isdigit():
             pass
@@ -107,12 +110,12 @@ class CLI:
                 result, time = i
 
                 print(Color.format(
-                    f'Puzzle {index + 1}: {result} ({time}s)',
+                    f'Puzzle {index + 1}: {result} ({self._format_time(*time)})',
                     colors[index % (len(colors))]))
         else:
             result, time = data[0]
 
-            print(Color.format(f'Puzzle returned {result} ({time}s)', 'OKCYAN'))
+            print(Color.format(f'Puzzle returned {result} ({self._format_time(*time)})', 'OKCYAN'))
 
 if __name__ == '__main__':
     import sys

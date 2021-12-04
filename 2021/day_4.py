@@ -5,8 +5,12 @@ def get_input(day):
 
     boards = []
     dict_ = {}
-    for idx, i in enumerate(lines):
-        dict_.update({int(y): (idx % 5, yidx) for yidx, y in enumerate(i.split())})
+    for idx, line in enumerate(lines):
+        # For every board, create:
+        # - Dictionary containing number on board as key, and (xvalue, yvalue) as value
+        # - List for sum of marked numbers on every x
+        # - List for sum of marked numbers on every y
+        dict_.update({int(y): (idx % 5, yidx) for yidx, y in enumerate(line.split())})
 
         if (idx + 1) % 5 == 0:
             boards.append((dict_.copy(), ([0] * 5, [0] * 5)))
@@ -18,15 +22,15 @@ def sort_winners(seq, boards):
     queue = []
     found = set()
 
-    for i in seq:
+    for num in seq:
         for idx, (board, (sums_x, sums_y)) in enumerate(boards):
-            if idx not in found and ((pos := board.pop(i, None)) is not None):
+            if idx not in found and ((pos := board.pop(num, None)) is not None):
                 x, y = pos
                 sums_x[x] += 1
                 sums_y[y] += 1
 
                 if sums_x[x] >= 5 or sums_y[y] >= 5:
-                    queue.append(sum(board.keys()) * i)
+                    queue.append(sum(board.keys()) * num)
                     found.add(idx)
 
     return queue

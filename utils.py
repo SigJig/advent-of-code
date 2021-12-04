@@ -30,10 +30,22 @@ class Day:
             raise ImportError(f'Unable to import day {int(self.day)}, puzzle {int(self)}') from e
 
     def run_method(self, method, *args, **kwargs):
-        start = time.perf_counter()
-        result = method(self, *args, **kwargs)
+        accuracy = int(kwargs.get('bench_accuracy', 8))
+        def _run():
+            start = time.perf_counter()
+            result = method(self, *args, **kwargs)
 
-        return result, round(time.perf_counter() - start, 8)
+            return result, round(time.perf_counter() - start, accuracy)
+
+        cycles = int(kwargs.pop('cycles', 1))
+        bench = []
+        result = None
+
+        for _ in range(cycles):
+            result, t = _run()
+            bench.append(t)
+
+        return result, (sum(bench), max(bench), min(bench), round(sum(bench) / len(bench), accuracy))
 
     def run(self, *args, **kwargs):
         module = self._import()
