@@ -10,7 +10,7 @@ def get_input(day):
         # - Dictionary containing number on board as key, and (xvalue, yvalue) as value
         # - List for sum of marked numbers on every x
         # - List for sum of marked numbers on every y
-        dict_.update({int(y): (idx % 5, yidx) for yidx, y in enumerate(line.split())})
+        dict_.update({int(num): (idx % 5, yidx) for yidx, num in enumerate(line.split())})
 
         if (idx + 1) % 5 == 0:
             boards.append((dict_.copy(), ([0] * 5, [0] * 5)))
