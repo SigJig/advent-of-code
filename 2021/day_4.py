@@ -2,6 +2,8 @@
 https://adventofcode.com/2021/day/4
 """
 
+from utils import pass_input
+
 def get_input(day):
     lines = (x for x in day.input if x.strip())
     seq = (int(x) for x in next(lines).split(','))
@@ -38,12 +40,13 @@ def sort_winners(seq, boards):
 
     return queue
 
+@pass_input(get_input)
+def puzzle_1(inp, *args, **kwargs):
+    return sort_winners(*inp)[0]
 
-def puzzle_1(day, *args, **kwargs):
-    return sort_winners(*get_input(day))[0]
-
-def puzzle_2(day, *args, **kwargs):
-    return sort_winners(*get_input(day))[-1]
+@pass_input(get_input)
+def puzzle_2(inp, *args, **kwargs):
+    return sort_winners(*inp)[-1]
 
 def puzzle_3(day, *args, **kwargs):
     """
