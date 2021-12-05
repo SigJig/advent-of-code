@@ -29,11 +29,11 @@ int calc(int* input, int sz, bool most)
 
         if (most)
         {
-            inp = (ones.size() >= zeros.size()) ? ones : zeros;
+            inp = std::move((ones.size() >= zeros.size()) ? ones : zeros);
         }
         else
         {
-            inp = (ones.size() < zeros.size()) ? ones : zeros;
+            inp = std::move((ones.size() < zeros.size()) ? ones : zeros);
         }
     }
 
