@@ -2,7 +2,7 @@
 import os
 import re
 from pathlib import Path
-from utils import Day
+from day import Day
 from time import perf_counter
 
 class Color:
