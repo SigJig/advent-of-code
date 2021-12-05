@@ -1,3 +1,6 @@
+"""
+https://adventofcode.com/2021/day/4
+"""
 
 def get_input(day):
     lines = (x for x in day.input if x.strip())

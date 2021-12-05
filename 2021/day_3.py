@@ -1,3 +1,6 @@
+"""
+https://adventofcode.com/2021/day/3
+"""
 
 from functools import reduce
 from operator import __lt__, __ge__

@@ -35,7 +35,7 @@ class Day:
             start = time.perf_counter()
             result = method(self, *args, **kwargs)
 
-            return result, round(time.perf_counter() - start, accuracy)
+            return result, time.perf_counter() - start
 
         cycles = int(kwargs.pop('cycles', 1))
         bench = []
@@ -45,7 +45,7 @@ class Day:
             result, t = _run()
             bench.append(t)
 
-        return result, (sum(bench), max(bench), min(bench), round(sum(bench) / len(bench), accuracy))
+        return result, list(map(lambda x: round(x, accuracy), (sum(bench), max(bench), min(bench), sum(bench) / len(bench))))
 
     def run(self, *args, **kwargs):
         module = self._import()
@@ -65,7 +65,10 @@ class Day:
             os.mkdir(self.input_dir(self.year))
 
         with open(self.path, 'w+') as fp:
-            template = '''
+            template = '''"""
+            https://adventofcode.com/{year}/day/{day}
+            """
+
             def {0}(day, *args, **kwargs):
                 pass
 
@@ -85,7 +88,7 @@ class Day:
 
             template = '\n'.join([x.replace(' ' * 4 * 3, '') for x in template])
 
-            fp.write(template.format(*[self.puzzle_basename(x) for x in range(1,4+1)]))
+            fp.write(template.format(*[self.puzzle_basename(x) for x in range(1,4+1)], year=self.year, day=self.day))
 
         with open(self.input_path, 'w+') as inp: pass
 
