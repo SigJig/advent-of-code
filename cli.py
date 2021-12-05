@@ -58,7 +58,7 @@ class CLI:
 
     def _get_year(self, options):
         if (year := options.pop('year', None)) is None:
-            years = sorted((x for x in Path(__file__).parent.iterdir() if re.match(r'\d{4}', str(x)) and x.is_dir()), reverse=True)
+            years = sorted((x for x in Path(__file__).parent.iterdir() if re.match(r'\d{4}', str(x.name)) and x.is_dir()), reverse=True)
 
             try:
                 return years[0]
