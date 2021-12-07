@@ -29,6 +29,7 @@ def puzzle_1(inp, *args, **kwargs):
 @pass_input(get_input)
 def puzzle_2(inp, *args, **kwargs):
     # Yeah that challenged should be considered a crime against humanity
+    # Only implemented in c++ for now
     pass
 
 def puzzle_3(day, *args, **kwargs):
