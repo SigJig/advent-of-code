@@ -57,6 +57,9 @@ class Cache:
 
 @pass_input(get_input)
 def puzzle_1(inp, *args, **kwargs):
+    """
+    Can use the puzzle 2 solution with cli argument --days 80
+    """
     days = 80
     # Days + 6 - num gives us the amount of days the fish has lived for
     dq = deque([days + 6 - num for num in inp])
@@ -83,10 +86,10 @@ def puzzle_1(inp, *args, **kwargs):
 
 @pass_input(get_input)
 def puzzle_2(inp, *args, **kwargs):
-    cache = Cache(1024)
+    cache = Cache(int(kwargs.get('days', 80)))
     result = cache.bulk(inp)
 
-    print(f'Cache size at: {sys.getsizeof(cache)}bytes')
+    print(f'Cache size at: {sys.getsizeof(cache._cache) / 1024}KB')
 
     return result
 
