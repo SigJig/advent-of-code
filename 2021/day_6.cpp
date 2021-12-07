@@ -46,11 +46,11 @@ uint64_t Cache::calc(const uint16_t& num)
     if (num < 7) return 0;
 
     uint16_t direct = num / 7;
-    uint64_t total = static_cast<uint64_t>(direct);
+    uint64_t total = direct;
 
     for (uint16_t i = 0; i < direct; i++)
     {
-        int16_t tmp = static_cast<int16_t>(num - (7 * i + 9));
+        int16_t tmp = num - (7 * i + 9);
 
         if (tmp > 0) total += this->get(tmp);
     }
