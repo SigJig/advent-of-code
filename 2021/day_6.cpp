@@ -68,10 +68,10 @@ int main(int argc, char** argv)
         nums.emplace_back(std::stoi(line));
     }
 
-    const int days = 256;
+    int days = argc ? std::stoi(argv[1]) : 256;
 
     Cache cch(days);
-    auto start = std::chrono::system_clock::now();
+    auto start = std::chrono::steady_clock::now();
 
     uint64_t total = nums.size();
 
@@ -80,14 +80,14 @@ int main(int argc, char** argv)
         total += cch.get_shifted(n);
     }
 
-    auto tdiff = std::chrono::system_clock::now() - start;
+    auto tdiff = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - start);
 
     std::cout
     << total
     << std::endl
     << "Time elapsed "
-    << std::chrono::duration_cast<std::chrono::duration<double>>(tdiff).count()
-    << "s, cache size at: "
+    << tdiff.count()
+    << "us, cache size at: "
     << cch.get_size() / pow(1024,1)
     << "KB"
     << std::endl;
