@@ -8,20 +8,27 @@
 #include <chrono>
 #include <unordered_map>
 #include <cmath>
+#include "../include/infint.h"
+
+#ifdef INFINT_H_
+typedef InfInt fish_c_t;
+#else
+typedef uint64_t fish_c_t;
+#endif
 
 class Cache
 {
 protected:
-    std::unordered_map<uint16_t, uint64_t> m_cache;
+    std::unordered_map<uint16_t, fish_c_t> m_cache;
     const uint16_t m_days;
 
 public:
     Cache(const uint16_t& days) : m_days(days) {}
 
-    int get_size() { return m_cache.size() * (sizeof(uint16_t) + sizeof(uint64_t)); }
+    int get_size() { return m_cache.size() * (sizeof(uint16_t) + sizeof(fish_c_t)); }
 
-    uint64_t calc(const uint16_t& num);
-    uint64_t get(const uint16_t& num)
+    fish_c_t calc(const uint16_t& num);
+    fish_c_t get(const uint16_t& num)
     {
         auto it = m_cache.find(num);
 
@@ -29,24 +36,24 @@ public:
             return it->second;
         }
 
-        uint64_t tot = this->calc(num);
+        fish_c_t tot = this->calc(num);
         m_cache.insert({num, tot});
 
         return tot;
     }
 
-    uint64_t get_shifted(const uint16_t& num)
+    fish_c_t get_shifted(const uint16_t& num)
     {
         return this->get(m_days + 6 - num);
     }
 };
 
-uint64_t Cache::calc(const uint16_t& num)
+fish_c_t Cache::calc(const uint16_t& num)
 {
     if (num < 7) return 0;
 
     uint16_t direct = num / 7;
-    uint64_t total = direct;
+    fish_c_t total = direct;
 
     for (uint16_t i = 0; i < direct; i++)
     {
@@ -73,7 +80,7 @@ int main(int argc, char** argv)
     Cache cch(days);
     auto start = std::chrono::steady_clock::now();
 
-    uint64_t total = nums.size();
+    fish_c_t total = nums.size();
 
     for (auto n : nums)
     {
