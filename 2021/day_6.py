@@ -93,10 +93,27 @@ def puzzle_2(inp, *args, **kwargs):
 
     return result
 
-def puzzle_3(day, *args, **kwargs):
+@pass_input(get_input)
+def puzzle_3(inp, *args, **kwargs):
     """
     Optimizations for puzzle 1 after having looked at other peoples solutions
+    
+    Swiped from https://www.reddit.com/r/adventofcode/comments/r9z49j/comment/hnm8dqm/?utm_source=share&utm_medium=web2x&context=3
+    
+    This is faster
     """
+    final = dict().fromkeys([i for i in range(9)], 0)
+    for i in inp:
+        final[i] += 1
+
+    for day in range(int(kwargs.get('days', 80))):
+        curr = final[0]
+        for i in range(1, 9):
+            final[i-1] = final[i]
+        final[8] = curr
+        final[6] += curr
+
+    return sum(list(final.values()))
 
 def puzzle_4(day, *args, **kwargs):
     """
