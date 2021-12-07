@@ -7,6 +7,7 @@
 #include <sstream>
 #include <chrono>
 #include <unordered_map>
+#include <cmath>
 
 class Cache
 {
@@ -16,7 +17,8 @@ protected:
 
 public:
     Cache(const uint16_t& days) : m_days(days) {}
-    
+
+    int get_size() { return m_cache.size() * (sizeof(uint16_t) + sizeof(uint64_t)); }
 
     uint64_t calc(const uint16_t& num);
     uint64_t get(const uint16_t& num)
@@ -85,7 +87,9 @@ int main(int argc, char** argv)
     << std::endl
     << "Time elapsed "
     << std::chrono::duration_cast<std::chrono::duration<double>>(tdiff).count()
-    << "s"
+    << "s, cache size at: "
+    << cch.get_size() / pow(1024,1)
+    << "KB"
     << std::endl;
 
     return 0;
