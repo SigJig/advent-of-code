@@ -102,20 +102,16 @@ class CLI:
         data = day.run(*args[1:], **options)
 
         puzzle = options.get('puzzle', None)
+        puzzles = list(map(int, puzzle.split(',')) if puzzle is not None else range(1, len(data) + 1))
 
-        if not puzzle:
-            colors = ['OKGREEN', 'OKYELLOW', 'OKPURP', 'OKCYAN']
+        colors = ['OKGREEN', 'OKYELLOW', 'OKPURP', 'OKCYAN']
 
-            for index, i in enumerate(data):
-                result, time = i
+        for index, i in enumerate(data):
+            result, time = i
 
-                print(Color.format(
-                    f'Puzzle {index + 1}: {result} ({self._format_time(*time)})',
-                    colors[index % (len(colors))]))
-        else:
-            result, time = data[0]
-
-            print(Color.format(f'Puzzle returned {result} ({self._format_time(*time)})', 'OKCYAN'))
+            print(Color.format(
+                f'Puzzle {puzzles[index]}: {result} ({self._format_time(*time)})',
+                colors[index % (len(colors))]))
 
 if __name__ == '__main__':
     import sys

@@ -51,7 +51,7 @@ class Day:
         module = self._import()
 
         if 'puzzle' in kwargs:
-            methods = [self.puzzle_basename(x) for x in kwargs.pop('puzzle').split()]
+            methods = [self.puzzle_basename(x) for x in kwargs.pop('puzzle').split(',')]
         else:
             methods = filter(lambda x: re.match(r'^puzzle_\d+$', x), dir(module))
 
