@@ -1,14 +1,8 @@
 
-use std::fs;
+use crate::utils;
 
-const FILE: &str = "./input/day_1.txt";
-
-fn get_input() -> String {
-    fs::read_to_string(FILE).expect("ioerror")
-}
-
-pub fn day_1() {
-    let inp = get_input();
+pub fn run() {
+    let inp = utils::get_input(1);
     let mut v: Vec<u32> = vec![0];
 
     for i in inp.split("\n") {
