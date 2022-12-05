@@ -7,10 +7,48 @@ use regex::Regex;
 
 lazy_static!{
     static ref MOVE_PATTERN: Regex = Regex::new(r"move\s(\d+)\sfrom\s(\d)\sto\s(\d)").unwrap();
+    static ref STACK_PATTERN: Regex = Regex::new(r"^\s?(?:(\s{3})|\[([A-Z])\])").unwrap();
+    static ref DESC_PATTERN: Regex = Regex::new(r"\s(?:\d+\s{3})*(\d+)").unwrap();
 }
 
-fn sol_1(stacks: &mut [Vec<char>]) {
+fn parse_stacks(inp: &str) -> Vec<Vec<char>> {
+    let mut v: Vec<Vec<char>> = vec![Vec::new(); DESC_PATTERN.captures(inp).unwrap()[1].parse::<usize>().unwrap()];
+    
+    for line in inp.split("\n") {
+        let mut current = line;
+        for i in 0.. {
+            let caps = STACK_PATTERN.captures(current);
+
+            if caps.is_none() {
+                break;
+            }
+            if i >= v.len() {
+                panic!("i at illegal index");
+            }
+
+            let caps = caps.unwrap();
+
+            // for example "[B]" is group 2, "   " is group 1
+            let cap = if caps.get(1).is_some() {&caps[1]} else {&caps[2]};
+
+            if !cap.trim().is_empty() {
+                v[i].push(cap.chars().nth(0).unwrap());
+            }
+
+            current = &current[caps[0].len()..];
+        }
+    }
+
+    for x in &mut v {
+        x.reverse();
+    }
+
+    v
+}
+
+fn sol_1() {
     let inp = utils::get_input(5);
+    let mut stacks: Vec<Vec<char>> = parse_stacks(&inp);
 
     for cap in MOVE_PATTERN.captures_iter(&inp) {
         let src: usize = cap[2].parse::<usize>().unwrap() - 1;
@@ -28,8 +66,9 @@ fn sol_1(stacks: &mut [Vec<char>]) {
     println!("");
 }
 
-fn sol_2(stacks: &mut [Vec<char>]) {
+fn sol_2() {
     let inp = utils::get_input(5);
+    let mut stacks: Vec<Vec<char>> = parse_stacks(&inp);
 
     for cap in MOVE_PATTERN.captures_iter(&inp) {
         let src: usize = cap[2].parse::<usize>().unwrap() - 1;
@@ -50,23 +89,6 @@ fn sol_2(stacks: &mut [Vec<char>]) {
 }
 
 pub fn run() {
-    let mut stacks: [Vec<char>; 9] = [
-        vec!['Z', 'P', 'M', 'H', 'R'],
-        vec!['P', 'C', 'J', 'B'],
-        vec!['S', 'N', 'H', 'G', 'L', 'C', 'D'],
-        vec!['F', 'T', 'M', 'D', 'Q', 'S', 'R', 'L'],
-        vec!['F', 'S', 'P', 'Q', 'B', 'T', 'Z', 'M'],
-        vec!['T', 'F', 'S', 'Z', 'B', 'G'],
-        vec!['N', 'R', 'V'],
-        vec!['P', 'G', 'L', 'T', 'D', 'V', 'C', 'M'],
-        vec!['W', 'Q', 'N', 'J', 'F', 'M', 'L'],
-    ];
-    let mut test_stacks: [Vec<char>; 3] = [
-        vec!['Z', 'N'],
-        vec!['M', 'C', 'D'],
-        vec!['P'],
-    ];
-
-    // sol_1(&mut stacks);
-    sol_2(&mut stacks);
+    sol_1();
+    sol_2();
 }
