@@ -1,6 +1,4 @@
 
-use crate::utils;
-
 struct SectionRange(u32, u32);
 
 impl From<&str> for SectionRange {
@@ -25,8 +23,7 @@ impl SectionRange {
     }
 }
 
-pub fn run() {
-    let inp = utils::get_input(4);
+pub fn run(inp: &str) {
     let mut sum_full = 0;
     let mut sum_partial = 0;
 

@@ -1,7 +1,6 @@
 
 use std::vec;
 
-use crate::utils;
 use lazy_static::lazy_static;
 use regex::Regex;
 
@@ -46,9 +45,8 @@ fn parse_stacks(inp: &str) -> Vec<Vec<char>> {
     v
 }
 
-fn sol_1() {
-    let inp = utils::get_input(5);
-    let mut stacks: Vec<Vec<char>> = parse_stacks(&inp);
+fn sol_1(inp: &str) {
+    let mut stacks: Vec<Vec<char>> = parse_stacks(inp);
 
     for cap in MOVE_PATTERN.captures_iter(&inp) {
         let src: usize = cap[2].parse::<usize>().unwrap() - 1;
@@ -66,9 +64,8 @@ fn sol_1() {
     println!("");
 }
 
-fn sol_2() {
-    let inp = utils::get_input(5);
-    let mut stacks: Vec<Vec<char>> = parse_stacks(&inp);
+fn sol_2(inp: &str) {
+    let mut stacks: Vec<Vec<char>> = parse_stacks(inp);
 
     for cap in MOVE_PATTERN.captures_iter(&inp) {
         let src: usize = cap[2].parse::<usize>().unwrap() - 1;
@@ -88,7 +85,7 @@ fn sol_2() {
     println!("");
 }
 
-pub fn run() {
-    sol_1();
-    sol_2();
+pub fn run(inp: &str) {
+    sol_1(inp);
+    sol_2(inp);
 }

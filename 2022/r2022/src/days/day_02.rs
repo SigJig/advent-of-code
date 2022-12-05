@@ -1,6 +1,4 @@
 
-use crate::utils;
-
 #[derive(PartialEq, Clone, Copy)]
 enum Hand {
     Rock = 1,
@@ -84,9 +82,8 @@ fn sum_pairs(pairs: &Vec<Pair>) -> u32 {
     result
 }
 
-fn sol_1() {
+fn sol_1(inp: &str) {
     let mut pairs: Vec<Pair> = vec![];
-    let inp = utils::get_input(2);
 
     for line in inp.split("\n") {
         if line.is_empty() {
@@ -103,8 +100,7 @@ fn sol_1() {
     println!("my points: {}", sum_pairs(&pairs));
 }
 
-fn sol_2() {
-    let inp = utils::get_input(2);
+fn sol_2(inp: &str) {
     let mut pairs: Vec<Pair> = vec![];
 
     for line in inp.split("\n") {
@@ -120,7 +116,7 @@ fn sol_2() {
     println!("my points: {}", sum_pairs(&pairs));
 }
 
-pub fn run() {
-    sol_1();
-    sol_2();
+pub fn run(inp: &str) {
+    sol_1(inp);
+    sol_2(inp);
 }

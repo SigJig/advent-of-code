@@ -1,5 +1,5 @@
 
 
-pub fn run() {
+pub fn run(inp: &str) {
 
 }

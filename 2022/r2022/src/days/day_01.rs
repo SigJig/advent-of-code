@@ -1,8 +1,5 @@
 
-use crate::utils;
-
-pub fn run() {
-    let inp = utils::get_input(1);
+pub fn run(inp: &str) {
     let mut v: Vec<u32> = vec![0];
 
     for i in inp.split("\n") {

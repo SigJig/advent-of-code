@@ -1,5 +1,4 @@
 
-use crate::utils;
 use std::collections::{HashSet};
 
 fn char_prio(c: char) -> u32 {
@@ -10,8 +9,7 @@ fn char_prio(c: char) -> u32 {
     (c as u32) - ('A' as u32) + 27
 }
 
-fn sol_1() {
-    let inp = utils::get_input(3);
+fn sol_1(inp: &str) {
     let mut sum: u32 = 0;
 
     for line in inp.split("\n") {
@@ -38,8 +36,7 @@ fn sol_1() {
     println!("sum: {}", sum);
 }
 
-fn sol_2() {
-    let inp = utils::get_input(3);
+fn sol_2(inp: &str) {
     let mut sum: u32 = 0;
     let mut sets: [HashSet<char>; 2] = [HashSet::new(), HashSet::new()];
 
@@ -67,7 +64,7 @@ fn sol_2() {
     println!("sol 2 sum: {}", sum);
 }
 
-pub fn run() {
-    sol_1();
-    sol_2();
+pub fn run(inp: &str) {
+    sol_1(inp);
+    sol_2(inp);
 }
