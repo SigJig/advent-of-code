@@ -1,5 +1,5 @@
 
-use std::collections::VecDeque;
+use std::collections::{VecDeque, HashSet};
 use std::time::{SystemTime};
 
 fn vec_duplicates(v: &VecDeque<char>) -> bool {
@@ -14,6 +14,8 @@ fn vec_duplicates(v: &VecDeque<char>) -> bool {
     false
 }
 
+// up to 3x as slow as find_marker_fast
+// bench with 100 iterations: 1399us(max), 1307us(avg), 1287us(min)
 fn find_marker(inp: &str, length: usize) -> Option<usize> {
     let mut dq: VecDeque<char> = VecDeque::new();
 
@@ -32,6 +34,7 @@ fn find_marker(inp: &str, length: usize) -> Option<usize> {
     None
 }
 
+// bench with 100 iterations: 937us(max), 644us(avg), 514us(min)
 fn find_marker_fast(inp: &str, length: usize) -> Option<usize> {
     let bytes = inp.as_bytes();
 
@@ -55,10 +58,30 @@ fn find_marker_fast(inp: &str, length: usize) -> Option<usize> {
     None
 }
 
+// up to 20x as slow as find_marker_fast
+// benched with 100 iterations: 12250us(max), 9763us(avg), 9617us(min)
+fn find_marker_set(inp: &str, length: usize) -> Option<usize> {
+    let bytes = inp.as_bytes();
+    let mut set: HashSet<u8> = HashSet::new();
+    for i in 0..inp.len() {
+        for j in i..i+length {
+            set.insert(bytes[j]);
+        }
+
+        if set.len() == length {
+            return Some(i+length);
+        }
+
+        set.clear();
+    }
+
+    None
+}
+
 fn bench_sol(sol: fn(&str,usize)->Option<usize>, inp: &str, length: usize) {
     let mut times: Vec<u128> = Vec::new();
     
-    for _ in 0..10000 {
+    for _ in 0..100 {
         let start = SystemTime::now();
         sol(inp, length);
         times.push(start.elapsed().unwrap().as_micros());
@@ -76,7 +99,7 @@ fn sol_1(inp: &str) {
 }
 
 fn sol_2(inp: &str) {
-    println!("index {}", find_marker_fast(inp, 14).unwrap());
+    println!("index {}", find_marker_set(inp, 14).unwrap());
 }
 
 pub fn run(inp: &str) {
@@ -85,4 +108,5 @@ pub fn run(inp: &str) {
 
     bench_sol(find_marker_fast, inp, 14);
     bench_sol(find_marker, inp, 14);
+    bench_sol(find_marker_set, inp, 14);
 }
