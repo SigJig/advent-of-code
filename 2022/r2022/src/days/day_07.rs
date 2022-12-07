@@ -53,6 +53,11 @@ impl Directory {
             println!("{}{} {}", indentstr, fi.size, fi.path);
         }
     }
+
+    fn size(&self) -> usize {
+        self.files.iter().map(|x| x.size).sum::<usize>()
+        + self.children.iter().map(|x| (*x).borrow().size()).sum::<usize>()
+    }
 }
 
 impl Fs {
@@ -155,4 +160,27 @@ pub fn run(inp: &str) {
     }
 
     fs.root.borrow().print(0);
+
+    let root_size = fs.root.borrow().size();
+    let required = 30_000_000 - (70_000_000 - root_size);
+    let mut work: Vec<Rc<RefCell<Directory>>> = vec![fs.root];
+    let mut smallest = root_size;
+    let mut sum: usize = 0;
+
+    while work.len() > 0 {
+        let dir = work.pop().unwrap();
+        let size = dir.borrow().size();
+
+        if size <= 100_000 {
+            sum += size;
+        }
+        if size >= required && size < smallest {
+            smallest = size;
+        }
+
+        work.extend(dir.borrow().children.clone());
+    }
+
+    println!("sum: {}, smallest: {}", sum, smallest);
+
 }
