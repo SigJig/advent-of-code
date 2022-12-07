@@ -64,8 +64,8 @@ impl Fs {
     fn _changedir(&mut self, path_raw: &str) {
         if path_raw.starts_with("..") {
             self.cwd = {
-                let cwd = &(self.cwd).borrow();
-                if self.cwd.borrow().parent.is_none() {
+                let cwd = self.cwd.borrow();
+                if cwd.parent.is_none() {
                     panic!("attempted .. when parent is none");
                 }
                 cwd.parent.as_ref().unwrap().clone()
