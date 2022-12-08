@@ -59,7 +59,8 @@ fn step_convert(step: i8, upper: usize, idx: usize) -> usize {
     }
 }
 
-fn scenic_vert(grid: &Vec<Vec<u8>>, yidx: usize, range: Range<usize>, upper: usize, cmp: u8, step: i8) -> u32 {
+fn scenic_vert(grid: &Vec<Vec<u8>>, yidx: usize, range: Range<usize>,
+        upper: usize, cmp: u8, step: i8) -> u32 {
     let mut s = 1;
     for idx in range {
         if cmp > grid[step_convert(step, upper, idx)][yidx] {
@@ -71,7 +72,8 @@ fn scenic_vert(grid: &Vec<Vec<u8>>, yidx: usize, range: Range<usize>, upper: usi
     s
 }
 
-fn scenic_hori(xaxis: &Vec<u8>, range: Range<usize>, upper: usize, cmp: u8, step: i8) -> u32 {
+fn scenic_hori(xaxis: &Vec<u8>, range: Range<usize>, upper: usize,
+        cmp: u8, step: i8) -> u32 {
     let mut s = 1;
     for idx in range {
         if cmp > xaxis[step_convert(step, upper, idx)] {
