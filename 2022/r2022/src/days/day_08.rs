@@ -1,4 +1,6 @@
 
+use std::ops::Range;
+
 fn parse_input(inp: &str) -> Vec<Vec<u8>> {
     let mut result: Vec<Vec<u8>> = Vec::new();
 
@@ -49,6 +51,39 @@ fn sol_1(inp: &str) {
     println!("visible: {}", visible);
 }
 
+fn step_convert(step: i8, upper: usize, idx: usize) -> usize {
+    if step == -1 {
+        upper - idx
+    } else {
+        idx
+    }
+}
+
+fn scenic_vert(grid: &Vec<Vec<u8>>, range: Range<usize>, yidx: usize, upper: usize, cmp: u8, step: i8) -> u32 {
+    let mut s = 1;
+    for idx in range {
+        if cmp > grid[step_convert(step, upper, idx)][yidx] {
+            s += 1;
+        } else {
+            break;
+        }
+    }
+    s
+}
+
+fn scenic_hori(xaxis: &Vec<u8>, range: Range<usize>, upper: usize, cmp: u8, step: i8) -> u32 {
+    let mut s = 1;
+    for idx in range {
+        if cmp > xaxis[step_convert(step, upper, idx)] {
+            s += 1;
+        } else {
+            break;
+        }
+    }
+    s
+}
+
+
 fn sol_2(inp: &str) {
     let grid = parse_input(inp);
     let grid_len = grid.len();
@@ -57,47 +92,11 @@ fn sol_2(inp: &str) {
 
     for (xidx, xaxis) in grid[1..grid_len - 1].iter().enumerate() {
         for (yidx, elem) in xaxis[1..grid_len - 1].iter().enumerate() {
-            let tmp = {
-                let mut s = 1;
-                for z in 1..xidx+1 {
-                    if *elem > grid[xidx+1-z][yidx+1] {
-                        s += 1;
-                    } else {
-                        break;
-                    }
-                }
-                s
-            } * {
-                let mut s = 1;
-                for z in 1..yidx+1 {
-                    if *elem > xaxis[yidx+1-z] {
-                        s += 1;
-                    } else {
-                        break;
-                    }
-                }
-                s
-            } * {
-                let mut s = 1;
-                for z in xidx+2..grid_len-1 {
-                    if *elem > grid[z][yidx+1] {
-                        s += 1;
-                    } else {
-                        break;
-                    }
-                }
-                s
-            } * {
-                let mut s = 1;
-                for z in yidx+2..grid_len-1 {
-                    if *elem > xaxis[z] {
-                        s += 1;
-                    } else {
-                        break;
-                    }
-                }
-                s
-            };
+            let tmp = 
+                scenic_vert(&grid, 1..xidx+1, yidx+1, xidx+1, *elem, -1)
+                * scenic_vert(&grid, xidx+2..grid_len-1, yidx+1, xidx+1, *elem, 1)
+                * scenic_hori(xaxis, 1..yidx+1, yidx+1, *elem, -1)
+                * scenic_hori(xaxis, yidx+2..grid_len-1, yidx+1, *elem, 1);
 
             if tmp > highest {
                 highest = tmp;
