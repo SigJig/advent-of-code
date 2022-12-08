@@ -59,7 +59,7 @@ fn step_convert(step: i8, upper: usize, idx: usize) -> usize {
     }
 }
 
-fn scenic_vert(grid: &Vec<Vec<u8>>, range: Range<usize>, yidx: usize, upper: usize, cmp: u8, step: i8) -> u32 {
+fn scenic_vert(grid: &Vec<Vec<u8>>, yidx: usize, range: Range<usize>, upper: usize, cmp: u8, step: i8) -> u32 {
     let mut s = 1;
     for idx in range {
         if cmp > grid[step_convert(step, upper, idx)][yidx] {
@@ -93,8 +93,8 @@ fn sol_2(inp: &str) {
     for (xidx, xaxis) in grid[1..grid_len - 1].iter().enumerate() {
         for (yidx, elem) in xaxis[1..grid_len - 1].iter().enumerate() {
             let tmp = 
-                scenic_vert(&grid, 1..xidx+1, yidx+1, xidx+1, *elem, -1)
-                * scenic_vert(&grid, xidx+2..grid_len-1, yidx+1, xidx+1, *elem, 1)
+                scenic_vert(&grid, yidx+1, 1..xidx+1, xidx+1, *elem, -1)
+                * scenic_vert(&grid, yidx+1, xidx+2..grid_len-1, xidx+1, *elem, 1)
                 * scenic_hori(xaxis, 1..yidx+1, yidx+1, *elem, -1)
                 * scenic_hori(xaxis, yidx+2..grid_len-1, yidx+1, *elem, 1);
 
