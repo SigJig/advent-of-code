@@ -79,7 +79,7 @@ fn parse_input(inp: &str) -> Vec<Box<dyn Opcode>> {
     res
 }
 
-pub fn run(inp: &str) {
+fn sol_1(inp: &str) {
     let opcodes = parse_input(inp);
     let mut vm = Vm {registers: [1; 1], instructions: opcodes, inst_p: 0};
     let mut v: Vec<i32> = Vec::new();
@@ -114,4 +114,27 @@ pub fn run(inp: &str) {
         + v[219] * 220
     );
 
+}
+
+fn sol_2(inp: &str) {
+    let opcodes = parse_input(inp);
+    let mut vm = Vm {registers: [1; 1], instructions: opcodes, inst_p: 0};
+    
+    for y in 0..6 {
+        for x in 0..40 {
+            if vm.registers[0] - 1 <= x  && x <= vm.registers[0] + 1 {
+                print!("#");
+            } else {
+                print!(".");
+            }
+
+            vm.tick();
+        }
+        println!("");
+    }
+}
+
+pub fn run(inp: &str) {
+    sol_1(inp);
+    sol_2(inp);
 }
