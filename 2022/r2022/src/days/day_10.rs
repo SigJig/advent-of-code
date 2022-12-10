@@ -79,6 +79,23 @@ fn parse_input(inp: &str) -> Vec<Box<dyn Opcode>> {
     res
 }
 
+fn sol_1_print(regvals: &Vec<i32>) {
+    let mut sum = 0;
+
+    for idx in 0..regvals.len() {
+        let ridx = 20 + (40 * idx);
+
+        if ridx >= regvals.len() {
+            break;
+        }
+
+        println!("{}: {}", ridx, regvals[ridx-1]);
+        sum += ridx as i32 * regvals[ridx-1];
+    }
+
+    println!("sum: {}", sum);
+}
+
 fn sol_1(inp: &str) {
     let opcodes = parse_input(inp);
     let mut vm = Vm {registers: [1; 1], instructions: opcodes, inst_p: 0};
@@ -86,33 +103,13 @@ fn sol_1(inp: &str) {
 
     loop {
         v.push(vm.registers[0]);
-        let br = vm.tick();
 
-        if br {break;}
+        if vm.tick() {
+            break;
+        }
     }
 
-    for x in &v {
-        println!("{}", x);
-    }
-    println!(
-        "20: {} ({}), 60: {}, 100: {}, 140: {}, 180: {}, 220: {} ({})",
-        v[19] * 20,
-        v[19],
-        v[59] * 60,
-        v[99] * 100,
-        v[139] * 140,
-        v[179] * 180,
-        v[219] * 220,
-        v[219]
-    );
-    println!("sum: {}",
-        v[19] * 20
-        + v[59] * 60
-        + v[99] * 100
-        + v[139] * 140
-        + v[179]* 180
-        + v[219] * 220
-    );
+    sol_1_print(&v);
 
 }
 
