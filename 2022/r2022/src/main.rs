@@ -22,7 +22,7 @@ const DAYFUNCTIONS: [DayFunction; 25] = [
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let day = if args.len() > 1 {args[1].parse::<usize>().unwrap()} else {9};
+    let day = if args.len() > 1 {args[1].parse::<usize>().unwrap()} else {10};
     let test = args.len() > 2 || args.len() == 1;
 
     println!("{}", format!("Day {}", day).blue());
