@@ -117,7 +117,7 @@ fn sol_2(inp: &str) {
     let opcodes = parse_input(inp);
     let mut vm = Vm {registers: [1; 1], instructions: opcodes, inst_p: 0};
     
-    for y in 0..6 {
+    for _ in 0..6 {
         for x in 0..40 {
             if vm.registers[0] - 1 <= x  && x <= vm.registers[0] + 1 {
                 print!("#");

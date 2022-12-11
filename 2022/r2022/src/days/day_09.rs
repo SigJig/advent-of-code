@@ -70,7 +70,6 @@ impl End {
             Direction::Right(count) => self.coords.x += count,
             Direction::Down(count) => self.coords.y -= count,
             Direction::Left(count) => self.coords.x -= count,
-            _ => panic!("unexpected enum in move_by")
         };
         &self.coords
     }
